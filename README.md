@@ -1,0 +1,2 @@
+# public
+Static file repository
