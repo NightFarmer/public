@@ -35,25 +35,26 @@
             // Loading splash scene
             var splash = document.getElementById('splash');
             var progressBar = splash.querySelector('.progress-bar span');
-            var currentResCount = 0;
+            var currentResCount = cc.loader.getResCount();
             cc.loader.onProgress = function (completedCount, totalCount, item) {
                 var percent = 100 * (completedCount - currentResCount) / (totalCount - currentResCount);
                 if (progressBar) {
                     progressBar.style.width = percent.toFixed(2) + '%';
                 }
             };
+            splash.style.display = 'block';
 
-            cc.director.on(cc.Director.EVENT_BEFORE_SCENE_LOADING, function () {
-                splash.style.display = 'block';
-                currentResCount = cc.loader.getResCount();
-            });
-            cc.director.on(cc.Director.EVENT_AFTER_SCENE_LAUNCH, function () {
+            cc.director.once(cc.Director.EVENT_AFTER_SCENE_LAUNCH, function () {
                 splash.style.display = 'none';
             });
         }
 
         var onStart = function () {
             cc.view.resizeWithBrowserSize(true);
+            // UC browser on many android devices have performance issue with retina display
+            if (cc.sys.os !== cc.sys.OS_ANDROID || cc.sys.browserType !== cc.sys.BROWSER_TYPE_UC) {
+                cc.view.enableRetina(true);
+            }
             //cc.view.setDesignResolutionSize(_CCSettings.designWidth, _CCSettings.designHeight, cc.ResolutionPolicy.SHOW_ALL);
         
             if (cc.sys.isBrowser) {
